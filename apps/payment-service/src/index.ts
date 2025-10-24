@@ -1,10 +1,24 @@
+import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
 import { serve } from "@hono/node-server";
+
 import { Hono } from "hono";
+import { authUser } from "./middleware/authMiddleware.js";
 
 const app = new Hono();
-
-app.get("/", (c) => {
-  return c.text("Hello Hono!");
+app.use("*", clerkMiddleware());
+app.get("/test", authUser, (c) => {
+  return c.json({
+    message: "You are logged in for payment!",
+    userId: c.get("userId"),
+  });
+});
+app.get("/health", (c) => {
+  return c.json({
+    message: "Payment Service is running",
+    status: "ok",
+    uptime: process.uptime(),
+    timeStamp: Date.now(),
+  });
 });
 
 const start = async () => {
@@ -12,7 +26,7 @@ const start = async () => {
     serve(
       {
         fetch: app.fetch,
-        port: 8002,
+        port: process.env.PORT ? Number(process.env.PORT) : 8002,
       },
       (info) => {
         console.log(
