@@ -1,7 +1,7 @@
 // ESM
 import Fastify from "fastify";
 import Clerk from "@clerk/fastify";
-import { authMiddleware } from "./middleware/authMiddleware.js";
+import { authUser } from "./middleware/authMiddleware.js";
 
 const fastify = Fastify({
   logger: true,
@@ -22,7 +22,7 @@ fastify.get("/health", async (request, reply) => {
     timeStamp: Date.now(),
   });
 });
-fastify.get("/test", { preHandler: authMiddleware }, async (request, reply) => {
+fastify.get("/test", { preHandler: authUser }, async (request, reply) => {
   return reply.send({
     message: "You are authenticated for Order Service",
     userId: request.userId,

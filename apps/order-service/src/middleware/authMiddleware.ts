@@ -7,7 +7,7 @@ declare module "fastify" {
   }
 }
 
-export async function authMiddleware(
+export async function authUser(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
